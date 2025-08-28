@@ -1,0 +1,406 @@
+---
+description: Enterprise Angular patterns that extend official Angular 20 best practices with domain-driven design, Bootstrap 5, and Nx monorepo structure. Inherits from angular-20.mdc.
+inherits: ["angular-20.mdc"]
+globs: ["**/*.{ts,html,scss,css,json}"]
+---
+
+# Realworld Enterprise Angular Patterns
+
+**Extends**: Official Angular 20 best practices with enterprise-grade patterns for scalable monorepos.
+
+**Reference**: https://github.com/hs2504785/realworld-patterns
+
+---
+
+## 📁 MANDATORY Project Structure
+
+This project MUST follow this exact folder structure for enterprise scalability:
+
+```
+workspace/
+├── apps/                          # Application entry points ONLY
+│   ├── admin/                     # Admin portal (users, settings, audit)
+│   ├── lab/                       # Laboratory management (experiments, samples)
+│   └── billing/                   # Billing system (products, invoices)
+│
+├── libs/                          # Reusable libraries
+│   ├── core/                      # Global singletons & infrastructure
+│   │   ├── src/lib/
+│   │   │   ├── interceptors/      # HTTP interceptors (auth, error, cache)
+│   │   │   ├── guards/            # Route guards (auth, role-based)
+│   │   │   ├── services/          # Core services (config, logger, platform)
+│   │   │   └── handlers/          # Error handlers
+│   │
+│   ├── shared/                    # Reusable UI components & utilities
+│   │   ├── src/lib/
+│   │   │   ├── components/        # Shared UI components
+│   │   │   ├── directives/        # Custom directives
+│   │   │   ├── pipes/             # Custom pipes
+│   │   │   └── validators/        # Form validators
+│   │
+│   ├── styles/                    # Design system & Bootstrap framework
+│   │   ├── src/lib/
+│   │   │   ├── tokens/            # Design tokens (colors, spacing)
+│   │   │   ├── themes/            # Theme configurations
+│   │   │   └── bootstrap/         # Bootstrap customizations
+│   │
+│   ├── auth/                      # Authentication & authorization
+│   │   ├── src/lib/
+│   │   │   ├── services/          # Auth services (login, token, permissions)
+│   │   │   ├── guards/            # Auth guards (can-activate, role-based)
+│   │   │   └── interceptors/      # Auth interceptors
+│   │
+│   ├── state/                     # Global state management
+│   │   ├── src/lib/
+│   │   │   ├── stores/            # State stores using signals
+│   │   │   └── effects/           # Side effects management
+│   │
+│   ├── utils/                     # Pure utility functions
+│   │   ├── src/lib/
+│   │   │   ├── date/              # Date utilities
+│   │   │   ├── string/            # String utilities
+│   │   │   ├── validation/        # Validation utilities
+│   │   │   └── rxjs/              # RxJS operators
+│   │
+│   ├── interfaces/                # TypeScript type definitions
+│   │   ├── src/lib/
+│   │   │   ├── api/               # API response interfaces
+│   │   │   ├── entities/          # Business entity interfaces
+│   │   │   └── common/            # Common type definitions
+│   │
+│   ├── i18n/                      # Internationalization
+│   │   ├── src/lib/
+│   │   │   ├── translations/      # Translation files
+│   │   │   └── services/          # i18n services
+│   │
+│   └── features/                  # Domain-driven feature modules
+│       ├── admin/                 # Admin domain features
+│       │   ├── users/             # User management feature
+│       │   ├── roles/             # Role management feature
+│       │   └── audit/             # Audit logging feature
+│       ├── lab/                   # Laboratory domain features
+│       │   ├── experiments/       # Experiment management
+│       │   ├── samples/           # Sample tracking
+│       │   └── reports/           # Lab reports
+│       └── billing/               # Billing domain features
+│           ├── products/          # Product catalog
+│           ├── invoices/          # Invoice management
+│           └── reports/           # Billing reports
+```
+
+---
+
+## 🚨 CRITICAL Dependency Boundaries
+
+**These dependency rules are MANDATORY and MUST be enforced:**
+
+### ✅ ALLOWED Dependencies:
+
+- `apps/*` → Can import from ANY `libs/*`
+- `libs/features/*` → Can import from `libs/shared/*`, `libs/core/*`, `libs/interfaces/*`, `libs/utils/*`
+- `libs/shared/*` → Can import from `libs/core/*`, `libs/interfaces/*`, `libs/utils/*`
+- `libs/core/*` → Can import from `libs/interfaces/*`, `libs/utils/*` ONLY
+- `libs/utils/*` → NO dependencies (pure functions only)
+- `libs/interfaces/*` → NO dependencies (types only)
+
+### ❌ FORBIDDEN Dependencies:
+
+- **NEVER**: `libs/core/*` → `libs/features/*` or `libs/shared/*`
+- **NEVER**: `libs/shared/*` → `libs/features/*`
+- **NEVER**: Cross-domain imports between features (admin ↔ lab ↔ billing)
+- **NEVER**: Circular dependencies anywhere
+
+---
+
+## 🎨 Bootstrap 5 MANDATORY Usage
+
+**No custom CSS allowed. Use Bootstrap 5 classes exclusively:**
+
+### Component Templates MUST Use Bootstrap:
+
+```typescript
+@Component({
+  selector: "app-user-list",
+  template: `
+    <div class="container-fluid">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h4 mb-0">User Management</h2>
+        <button class="btn btn-primary" (click)="addUser()">
+          <i class="bi bi-plus-circle me-2"></i>Add User
+        </button>
+      </div>
+
+      @if (loading()) {
+      <div class="d-flex justify-content-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      } @if (error()) {
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error() }}
+        <button type="button" class="btn-close" (click)="clearError()"></button>
+      </div>
+      }
+
+      <div class="row">
+        @for (user of users(); track user.id) {
+        <div class="col-md-6 col-lg-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{ user.name }}</h5>
+              <p class="card-text text-muted">{{ user.email }}</p>
+              <span class="badge bg-primary">{{ user.role }}</span>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  `,
+})
+export class UserListComponent {}
+```
+
+### Form Patterns MUST Use Bootstrap:
+
+```html
+<form class="needs-validation" novalidate>
+  <div class="mb-3">
+    <label for="email" class="form-label">Email address</label>
+    <input
+      type="email"
+      class="form-control"
+      id="email"
+      [value]="email()"
+      (input)="email.set($event.target.value)"
+      required
+    />
+    <div class="invalid-feedback">Please provide a valid email.</div>
+  </div>
+
+  <div class="d-flex justify-content-end gap-2">
+    <button type="button" class="btn btn-outline-secondary">Cancel</button>
+    <button type="submit" class="btn btn-primary">Save</button>
+  </div>
+</form>
+```
+
+---
+
+## 🏗️ Enterprise Component Patterns
+
+**Extend Angular 20 patterns with enterprise requirements:**
+
+### Service Pattern with Signals:
+
+```typescript
+import { Injectable, signal, computed, inject } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+
+@Injectable({
+  providedIn: "root",
+})
+export class UserService {
+  private http = inject(HttpClient);
+
+  // Private signals for internal state
+  private _users = signal<User[]>([]);
+  private _loading = signal(false);
+  private _error = signal<string | null>(null);
+
+  // Public readonly signals
+  users = this._users.asReadonly();
+  loading = this._loading.asReadonly();
+  error = this._error.asReadonly();
+
+  // Computed signals
+  userCount = computed(() => this.users().length);
+  activeUsers = computed(() => this.users().filter((u) => u.active));
+
+  async loadUsers() {
+    this._loading.set(true);
+    this._error.set(null);
+
+    try {
+      const users = await this.http.get<User[]>("/api/users").toPromise();
+      this._users.set(users);
+    } catch (error) {
+      this._error.set("Failed to load users");
+    } finally {
+      this._loading.set(false);
+    }
+  }
+}
+```
+
+### Functional Guards (Required for Protected Routes):
+
+```typescript
+import { CanActivateFn, Router } from "@angular/router";
+import { inject } from "@angular/core";
+import { AuthService } from "@auth/services";
+
+export const authGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isAuthenticated()) {
+    return true;
+  }
+
+  router.navigate(["/login"], { queryParams: { returnUrl: state.url } });
+  return false;
+};
+
+export const roleGuard = (requiredRole: string): CanActivateFn => {
+  return (route, state) => {
+    const authService = inject(AuthService);
+
+    return authService.hasRole(requiredRole);
+  };
+};
+```
+
+### Lazy Route Configuration:
+
+```typescript
+import { Routes } from "@angular/router";
+import { authGuard, roleGuard } from "@auth/guards";
+
+export const routes: Routes = [
+  {
+    path: "users",
+    loadComponent: () =>
+      import("./user-list.component").then((c) => c.UserListComponent),
+    canActivate: [authGuard, roleGuard("admin")],
+    title: "User Management",
+  },
+  {
+    path: "features/admin",
+    loadChildren: () => import("@features/admin").then((m) => m.ADMIN_ROUTES),
+    canActivate: [authGuard],
+  },
+];
+```
+
+---
+
+## 🔐 Mandatory Security Patterns
+
+### HTTP Interceptors (Required):
+
+```typescript
+import { HttpInterceptorFn } from "@angular/common/http";
+import { inject } from "@angular/core";
+import { AuthService } from "@auth/services";
+
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authService = inject(AuthService);
+  const token = authService.getToken();
+
+  if (token) {
+    req = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  return next(req);
+};
+```
+
+### Global Error Handler (Required):
+
+```typescript
+import { ErrorHandler, Injectable, inject } from "@angular/core";
+import { LoggerService } from "@core/services";
+
+@Injectable()
+export class GlobalErrorHandler implements ErrorHandler {
+  private logger = inject(LoggerService);
+
+  handleError(error: any): void {
+    this.logger.error("Global error:", error);
+
+    // Send to monitoring service
+    // Show user-friendly message
+  }
+}
+```
+
+---
+
+## 📂 File Naming (Extends Angular Guidelines)
+
+**In addition to Angular naming conventions, follow these enterprise patterns:**
+
+```
+✅ CORRECT:
+user-list.component.ts
+user-management.service.ts
+auth.guard.ts
+error.interceptor.ts
+user.interface.ts
+api-response.type.ts
+
+❌ INCORRECT:
+UserList.component.ts
+userManagement.service.ts
+AuthGuard.ts
+errorInterceptor.ts
+user.Interface.ts
+ApiResponse.type.ts
+```
+
+---
+
+## 🎯 Critical Enforcement Rules
+
+**These rules MUST be followed in addition to Angular 20 best practices:**
+
+1. **Folder Structure**: NEVER deviate from the specified structure
+2. **Dependencies**: ALWAYS respect boundary rules - core cannot import from features
+3. **Bootstrap Only**: NEVER write custom CSS - use Bootstrap classes
+4. **Security**: ALWAYS implement auth guards on protected routes
+5. **Domain Separation**: NEVER cross-import between feature domains
+6. **Signals**: ALWAYS use signals for reactive state (extends Angular 20 patterns)
+7. **Error Handling**: ALWAYS implement proper error boundaries
+8. **Performance**: ALWAYS use lazy loading for feature routes
+9. **Types**: ALWAYS use proper TypeScript interfaces from `@interfaces/*`
+10. **Testing**: ALWAYS include unit tests following the same structure
+
+---
+
+## 🚫 Additional Prohibitions
+
+**In addition to Angular 20 prohibitions:**
+
+- **NEVER** put business logic in components
+- **NEVER** create circular dependencies between libs
+- **NEVER** import from a higher-level lib (e.g., core importing from features)
+- **NEVER** skip auth guards on protected routes
+- **NEVER** write custom CSS when Bootstrap classes exist
+- **NEVER** use `any` types (extends Angular 20 rule)
+
+---
+
+## ✅ Required Implementations
+
+**Every enterprise Angular project MUST have:**
+
+- Auth guards with RBAC (Role-Based Access Control)
+- HTTP interceptors for authentication and error handling
+- Global error handler for monitoring
+- Proper loading states using signals
+- Bootstrap-based responsive UI
+- Lazy-loaded feature modules
+- Domain-separated feature libraries
+- Proper TypeScript interfaces and types
+
+---
+
+**Reference Documentation**: https://github.com/hs2504785/realworld-patterns
+
+_This extends official Angular 20 patterns with enterprise architecture requirements._

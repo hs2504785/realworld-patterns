@@ -46,27 +46,32 @@ This specification defines a scalable architecture for Angular applications usin
 
 ## 📚 Documentation Index
 
-| Document                                                 | Description                                |
-| -------------------------------------------------------- | ------------------------------------------ |
-| [spec.md](./spec.md)                                     | Detailed folder structure specification    |
-| [apps.md](./apps.md)                                     | Application architecture and routing       |
-| [core.md](./core.md)                                     | Core infrastructure and services           |
-| [auth.md](./auth.md)                                     | Authentication and authorization patterns  |
-| [features.md](./features.md)                             | Feature module organization and boundaries |
-| [shared.md](./shared.md)                                 | Shared UI components library               |
-| [styles.md](./styles.md)                                 | Design system and SCSS architecture        |
-| [theme.md](./theme.md)                                   | Theming system and runtime switching       |
-| [interfaces.md](./interfaces.md)                         | TypeScript type definitions                |
-| [i18n.md](./i18n.md)                                     | Internationalization strategy              |
-| [utils.md](./utils.md)                                   | Utility functions and helpers              |
-| [state.md](./state.md)                                   | State management patterns                  |
-| [testing.md](./testing.md)                               | Testing strategies and patterns            |
-| [security.md](./security.md)                             | Security best practices                    |
-| [performance.md](./performance.md)                       | Performance optimization guidelines        |
-| [build-deploy.md](./build-deploy.md)                     | Build and deployment configuration         |
-| [architecture.md](./architecture.md)                     | Visual architecture diagrams and patterns  |
-| [angular-best-practices.md](./angular-best-practices.md) | Enterprise extensions to Angular patterns  |
-| [best-practices.md](./best-practices.md)                 | Project coding preferences for Angular 20  |
+| Document                                                 | Description                                 |
+| -------------------------------------------------------- | ------------------------------------------- |
+| [spec.md](./spec.md)                                     | Detailed folder structure specification     |
+| [apps.md](./apps.md)                                     | Application architecture and routing        |
+| [core.md](./core.md)                                     | Core infrastructure and services            |
+| [auth.md](./auth.md)                                     | Authentication and authorization patterns   |
+| [features.md](./features.md)                             | Feature module organization and boundaries  |
+| [shared.md](./shared.md)                                 | Shared UI components library                |
+| [styles.md](./styles.md)                                 | Design system and SCSS architecture         |
+| [theme.md](./theme.md)                                   | Theming system and runtime switching        |
+| [interfaces.md](./interfaces.md)                         | TypeScript type definitions                 |
+| [i18n.md](./i18n.md)                                     | Internationalization strategy               |
+| [utils.md](./utils.md)                                   | Utility functions and helpers               |
+| [state.md](./state.md)                                   | State management patterns                   |
+| [testing.md](./testing.md)                               | Testing strategies and patterns             |
+| [security.md](./security.md)                             | Security best practices                     |
+| [performance.md](./performance.md)                       | Performance optimization guidelines         |
+| [build-deploy.md](./build-deploy.md)                     | Build and deployment configuration          |
+| [architecture.md](./architecture.md)                     | Visual architecture diagrams and patterns   |
+| [angular-best-practices.md](./angular-best-practices.md) | Enterprise extensions to Angular patterns   |
+| [best-practices.md](./best-practices.md)                 | Project coding preferences for Angular 20   |
+| [realworld-patterns.md](./realworld-patterns.md)         | **Universal patterns for ALL AI tools**     |
+| [mcp-server/](./mcp-server/)                             | **MCP server for real-time AI integration** |
+| [MCP-GUIDE.md](./MCP-GUIDE.md)                           | **Complete MCP server creation & usage**    |
+| [LLM-INTEGRATION.md](./LLM-INTEGRATION.md)               | LLM integration guide and reference files   |
+| [CURSOR-SETUP.md](./CURSOR-SETUP.md)                     | Modern Cursor IDE setup with .mdc files     |
 
 ## 🛠 Technology Stack
 
@@ -126,43 +131,70 @@ Built on Bootstrap 5 with custom design tokens:
 
 ## 🎯 For LLMs and AI Development
 
-See [llm-context.md](./llm-context.md) for a comprehensive context file optimized for AI-assisted development and code generation.
+**Universal File**: [realworld-patterns.md](./realworld-patterns.md) - One comprehensive file that works with ALL AI tools.
 
-## 📦 Reusing Across Projects & Frameworks
+Just copy-paste the content into any AI conversation for consistent enterprise Angular patterns.
 
-Want to use these patterns in multiple projects? Here are the most effective approaches:
+## 🤖 LLM Integration & Pattern Reference
 
-### 🎭 **GitHub Template** (Recommended - Fastest Start)
+Use these reference files to ensure any LLM follows your enterprise patterns consistently:
 
-```bash
-# Create framework-specific templates
-gh repo create my-angular-project --template yourorg/realworld-patterns-angular
-gh repo create my-react-project --template yourorg/realworld-patterns-react
-```
+### 🎯 **Universal Setup** (One File for Everything)
 
-### 📦 **NPM Package** (For Shared Code)
+**For ALL AI Tools (Cursor, ChatGPT, Claude, etc.):**
 
 ```bash
-npm install @yourorg/realworld-patterns
-
-# Framework-specific imports
-import { EnterpriseStore } from '@yourorg/realworld-patterns/angular';
-import { useEnterpriseStore } from '@yourorg/realworld-patterns/react';
-import { validateInput } from '@yourorg/realworld-patterns/shared';
+# Copy comprehensive patterns - works everywhere
+curl -s https://raw.githubusercontent.com/hs2504785/realworld-patterns/main/realworld-patterns.md
 ```
 
-### 📚 **Documentation Site** (For Reference)
+That's it! One file, one command, works for everything.
 
-Host these docs on GitHub Pages, Netlify, or any static site host for team reference.
+### 📋 **Simple Team Usage**
 
-> 🌟 **Framework Flexibility**: While examples use Angular 20, these enterprise patterns adapt beautifully to React, Vue, and other modern frameworks!
+```markdown
+🎯 Team Instruction:
+"Copy patterns from: https://raw.githubusercontent.com/hs2504785/realworld-patterns/main/realworld-patterns.md
+Use Angular 18+ standalone, Bootstrap 5, signals, and exact folder structure."
+```
 
-| Pattern              | Angular             | React         | Vue         | Universal     |
-| -------------------- | ------------------- | ------------- | ----------- | ------------- |
-| **Folder Structure** | ✅ Direct           | ✅ Adapted    | ✅ Adapted  | ✅ Principles |
-| **Domain Design**    | ✅                  | ✅            | ✅          | ✅            |
-| **State Management** | Signals             | Zustand/Redux | Pinia       | ✅ Patterns   |
-| **Security**         | Guards/Interceptors | HOCs/Hooks    | Composables | ✅ Validation |
+### 🔗 **Alternative Approaches** (Optional)
+
+**For Advanced Cursor Users:**
+
+```bash
+# MCP Server (real-time validation & generation)
+cd mcp-server && npm install && npm run build
+# Configure in Cursor settings - see mcp-server/README.md
+```
+
+**For Specific Use Cases:**
+
+- **Cursor .mdc format**: `angular-20.mdc` + `realworld-patterns.mdc` (for inheritance)
+- **Quick prompt**: `prompt-reference.md` (minimal version)
+- **Legacy structured data**: `mcp-context.json` (static JSON)
+
+### 📁 **Available Reference Files**
+
+| File                     | Purpose                        | Best For                        |
+| ------------------------ | ------------------------------ | ------------------------------- |
+| `realworld-patterns.md`  | **Universal patterns file**    | **ALL AI tools (recommended)**  |
+| `mcp-server/`            | **Real-time MCP server**       | **Advanced Cursor integration** |
+| `MCP-GUIDE.md`           | **Complete MCP documentation** | **MCP setup & usage**           |
+| `realworld-patterns.mdc` | Modern Cursor IDE rules        | Cursor IDE inheritance          |
+| `angular-20.mdc`         | Official Angular 20 patterns   | Base patterns for inheritance   |
+| `llm-context-rules.md`   | Focused LLM patterns & rules   | Alternative detailed reference  |
+| `prompt-reference.md`    | Quick copy-paste prompt        | Minimal prompt version          |
+| `mcp-context.json`       | Legacy structured data         | Static MCP systems              |
+
+### 🎯 **What Each File Provides**
+
+- **Exact folder structure** to follow
+- **Dependency boundary rules** (what can import what)
+- **Angular 18+ patterns** (standalone, signals, guards)
+- **Bootstrap 5 requirements** (no custom CSS)
+- **Security patterns** (auth guards, interceptors)
+- **Code templates** for consistent generation
 
 ## 🤝 Contributing
 

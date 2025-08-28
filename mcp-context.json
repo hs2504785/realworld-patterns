@@ -1,0 +1,135 @@
+{
+  "name": "realworld-angular-patterns",
+  "version": "1.0.0",
+  "description": "Enterprise Angular 18+ patterns for consistent development",
+  "repository": "https://github.com/hs2504785/realworld-patterns",
+  "context": {
+    "type": "angular-enterprise-patterns",
+    "framework": "Angular 18+",
+    "styling": "Bootstrap 5",
+    "architecture": "Domain-Driven Design with Nx monorepo"
+  },
+  "rules": {
+    "mandatory_structure": {
+      "apps": "Application entry points only",
+      "libs": {
+        "core": "Global singletons & infrastructure",
+        "shared": "Reusable UI components & utilities",
+        "auth": "Authentication & authorization",
+        "features": "Domain-driven feature modules",
+        "interfaces": "TypeScript type definitions",
+        "utils": "Pure utility functions",
+        "styles": "Design system & SCSS",
+        "state": "Global state management",
+        "i18n": "Internationalization"
+      }
+    },
+    "dependency_boundaries": {
+      "allowed": {
+        "apps/*": ["libs/*"],
+        "libs/features/*": [
+          "libs/shared/*",
+          "libs/core/*",
+          "libs/interfaces/*",
+          "libs/utils/*"
+        ],
+        "libs/shared/*": ["libs/core/*", "libs/interfaces/*", "libs/utils/*"],
+        "libs/core/*": ["libs/interfaces/*", "libs/utils/*"]
+      },
+      "forbidden": {
+        "libs/core/*": ["libs/features/*", "libs/shared/*"],
+        "libs/shared/*": ["libs/features/*"],
+        "cross_domain": "No imports between admin/lab/billing features"
+      }
+    },
+    "angular_patterns": {
+      "components": "ALWAYS standalone",
+      "state": "ALWAYS use signals",
+      "routing": "ALWAYS lazy loading",
+      "guards": "ALWAYS functional with inject()",
+      "services": "ALWAYS injectable with providedIn",
+      "modules": "NEVER use NgModules"
+    },
+    "styling_patterns": {
+      "framework": "Bootstrap 5 ONLY",
+      "custom_css": "FORBIDDEN",
+      "utility_classes": "REQUIRED",
+      "components": "Use Bootstrap components"
+    },
+    "security_patterns": {
+      "auth_guards": "REQUIRED for protected routes",
+      "interceptors": "REQUIRED for HTTP auth",
+      "error_handling": "REQUIRED with global handler",
+      "validation": "REQUIRED for all forms"
+    }
+  },
+  "code_templates": {
+    "component": {
+      "pattern": "standalone",
+      "template": "@Component({\n  selector: 'app-{name}',\n  standalone: true,\n  imports: [CommonModule],\n  template: `<div class=\"container-fluid\">...</div>`\n})\nexport class {Name}Component {\n  loading = signal(false);\n}",
+      "requirements": [
+        "signals for state",
+        "bootstrap classes",
+        "proper imports"
+      ]
+    },
+    "service": {
+      "pattern": "injectable",
+      "template": "@Injectable({ providedIn: 'root' })\nexport class {Name}Service {\n  private http = inject(HttpClient);\n  private _state = signal(initialState);\n  state = this._state.asReadonly();\n}",
+      "requirements": [
+        "inject() for DI",
+        "signals for state",
+        "readonly public state"
+      ]
+    },
+    "guard": {
+      "pattern": "functional",
+      "template": "export const {name}Guard: CanActivateFn = (route, state) => {\n  const service = inject(SomeService);\n  return service.check();\n};",
+      "requirements": ["functional guards", "inject() for dependencies"]
+    },
+    "routes": {
+      "pattern": "lazy",
+      "template": "{\n  path: 'feature',\n  loadComponent: () => import('./feature.component').then(c => c.FeatureComponent),\n  canActivate: [authGuard]\n}",
+      "requirements": [
+        "lazy loading",
+        "guard protection",
+        "standalone components"
+      ]
+    }
+  },
+  "file_naming": {
+    "convention": "kebab-case",
+    "examples": {
+      "correct": [
+        "user-list.component.ts",
+        "auth.service.ts",
+        "user.interface.ts"
+      ],
+      "incorrect": [
+        "UserList.component.ts",
+        "authService.ts",
+        "User.interface.ts"
+      ]
+    }
+  },
+  "validation_rules": [
+    "Check dependency boundaries before imports",
+    "Ensure standalone components only",
+    "Verify Bootstrap classes usage",
+    "Confirm signals for reactive state",
+    "Validate proper file structure placement",
+    "Ensure proper TypeScript interfaces",
+    "Check auth guards on protected routes",
+    "Verify lazy loading implementation"
+  ],
+  "critical_reminders": [
+    "NEVER create NgModules",
+    "NEVER write custom CSS (use Bootstrap)",
+    "NEVER violate dependency boundaries",
+    "NEVER skip auth guards on protected routes",
+    "NEVER use observables for local component state",
+    "ALWAYS use signals for reactive state",
+    "ALWAYS use Bootstrap utility classes",
+    "ALWAYS implement proper error handling"
+  ]
+}
